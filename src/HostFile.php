@@ -41,6 +41,7 @@ class HostFile
     {
         $this->setPath($path);
         $this->rules = [];
+        $this->readFile();
     }
 
     private function setPath(/* string */$path)
@@ -62,12 +63,21 @@ class HostFile
     private function readFile()
     {
         $h = fopen($this->path, 'r');
+        while (($line = fgets($h)) !== false) {
+            $this->readLine($line);
+        }
         fclose($h);
     }
 
     private function readLine(/* string */ $line)
     {
-
+        echo "line read : $line \n";
+        $re = "/^\\s*(?:#.*$)|(?:\\s*(?<ip>\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\s+(?<name>[a-zA-Z0-9\\.\\- ]+)\\s*(?:#.*)\\s*)$/mi";
+        if (preg_match($re, $line, $matches) > 0) {
+            if (isset($matches['ip']) && isset($matches['name'])) {
+                $this->addRule($matches['ip'], $matches['name']);
+            }
+        }
     }
 
     function getRules()
@@ -75,9 +85,9 @@ class HostFile
         return $this->rules;
     }
 
-    function addRule(/* string */$ip, /* string */ $server_name)
+    function addRule(/* string */ $ip, /* string */ $server_name)
     {
-
+        $this->rules[$server_name] = $ip;
         return $this;
     }
 
@@ -103,7 +113,7 @@ class HostFile
         }
         $h = fopen($path, 'w');
         foreach ($this->rules as $server_name => $ip) {
-            fwrite($h, "$ip $server_name \r\n");
+            fwrite($h, "$ip\t\t$server_name \r\n");
         }
         fclose($h);
     }

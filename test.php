@@ -1,5 +1,7 @@
 <?php
 
+use fzed51\HostFile\HostFile;
+
 /*
  * The MIT License
  *
@@ -26,7 +28,7 @@
 
 require './vendor/autoload.php';
 
-$host = new fzed51\HostFile\HostFile("C:/Windows/System32/drivers/etc/hosts");
+$host = new HostFile("C:/Windows/System32/drivers/etc/hosts");
 
 var_dump($host->getRules());
 
@@ -38,6 +40,9 @@ $host2 = $host->save('./host-copie');
 
 var_dump($host->getPath());
 var_dump($host2->getPath());
+
+$host3 = new HostFile("./host-copie");
+var_dump($host3->getRules());
 
 unlink('./host-copie');
 
