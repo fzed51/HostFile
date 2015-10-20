@@ -24,3 +24,20 @@
  * THE SOFTWARE.
  */
 
+require './vendor/autoload.php';
+
+$host = new fzed51\HostFile\HostFile("C:/Windows/System32/drivers/etc/hosts");
+
+var_dump($host->getRules());
+
+$host->addRule('127.0.0.1', 'dev.host.local');
+
+var_dump($host->getRules());
+
+$host2 = $host->save('./host-copie');
+
+var_dump($host->getPath());
+var_dump($host2->getPath());
+
+unlink('./host-copie');
+

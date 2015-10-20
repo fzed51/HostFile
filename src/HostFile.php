@@ -33,5 +33,79 @@ namespace fzed51\HostFile;
  */
 class HostFile
 {
-    //put your code here
+
+    private $path;
+    private $rules;
+
+    public function __construct(/* string */$path)
+    {
+        $this->setPath($path);
+        $this->rules = [];
+    }
+
+    private function setPath(/* string */$path)
+    {
+        $this->path = $path;
+        if (!is_readable($path)) {
+            throw new Exception\UnreadableFile("Le fichier '$path' n'est pas lisible.");
+        }
+    }
+
+    function getPath()
+    {
+        return $this->path;
+    }
+
+    private function readFile()
+    {
+        $h = fopen($this->path, 'r');
+        fclose($h);
+    }
+
+    private function readLine(/* string */ $line)
+    {
+
+    }
+
+    function getRules()
+    {
+        return $this->rules;
+    }
+
+    function addRule(/* string */$ip, /* string */ $server_name)
+    {
+
+        return $this;
+    }
+
+    function save(/* string */$path = null)
+    {
+        if (is_null($path) || $path == $this->path) {
+            $this->writeFile($path);
+            return $this;
+        } else {
+            $host = clone $this;
+            if (!touch($path)) {
+                throw new Exception\UnwritableFile("Le fichier '$path' n'e peu pas être créé.");
+            }
+            $host->setPath($path);
+            $host->writeFile($path);
+            return $host;
+        }
+    }
+
+    private function writeFile(/* string */$path)
+    {
+        if (is_file($path)) {
+            if (!is_writable($path)) {
+                throw new Exception\UnwritableFile("Le fichier '$path' n'e peu pas être modifié.");
+            }
+        }
+        $h = fopen($path, 'w');
+        foreach ($this->rules as $server_name => $ip) {
+            fwrite($h, "$ip $server_name \r\n");
+        }
+        fclose($h);
+    }
+
 }
