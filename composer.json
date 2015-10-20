@@ -1,0 +1,16 @@
+{
+    "name": "fzed51/hostfile",
+    "description": "classe de manipulation de fichier host.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "fzed51",
+            "email": "fzed51@users.noreply.github.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "fzed51\\HostFile\\": "src/"
+        }
+    }
+}
