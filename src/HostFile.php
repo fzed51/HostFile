@@ -45,10 +45,13 @@ class HostFile
 
     private function setPath(/* string */$path)
     {
-        $this->path = $path;
+        if (!is_file($path) && !touch($path)) {
+            throw new Exception\UnwritableFile("Le fichier '$path' n'e peu pas être créé.");
+        }
         if (!is_readable($path)) {
             throw new Exception\UnreadableFile("Le fichier '$path' n'est pas lisible.");
         }
+        $this->path = realpath($path);
     }
 
     function getPath()
@@ -85,9 +88,6 @@ class HostFile
             return $this;
         } else {
             $host = clone $this;
-            if (!touch($path)) {
-                throw new Exception\UnwritableFile("Le fichier '$path' n'e peu pas être créé.");
-            }
             $host->setPath($path);
             $host->writeFile($path);
             return $host;
