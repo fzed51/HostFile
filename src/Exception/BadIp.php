@@ -24,28 +24,14 @@
  * THE SOFTWARE.
  */
 
-use fzed51\HostFile\HostFile;
+namespace fzed51\HostFile\Exception;
 
-require './vendor/autoload.php';
-
-$host = new HostFile("C:/Windows/System32/drivers/etc/hosts");
-
-var_dump($host->getRules());
-
-$host
-    ->addRule('127.0.0.1', 'localhost')
-    ->addRule('192.168.1.1', 'routeur')
-    ->addRule('::1', 'local.dev');
-
-var_dump($host->getRules());
-
-$host2 = $host->save('./host-copie');
-
-var_dump($host->getPath());
-var_dump($host2->getPath());
-
-$host3 = new HostFile("./host-copie");
-var_dump($host3->getRules());
-
-unlink('./host-copie');
-
+/**
+ * Description of BadIp
+ *
+ * @author fabien.sanchez
+ */
+class BadIp extends \Exception
+{
+    //put your code here
+}

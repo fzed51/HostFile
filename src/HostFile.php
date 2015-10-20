@@ -71,8 +71,9 @@ class HostFile
 
     private function readLine(/* string */ $line)
     {
-        echo "line read : $line \n";
-        $re = "/^\\s*(?:#.*$)|(?:\\s*(?<ip>\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\s+(?<name>[a-zA-Z0-9\\.\\- ]+)\\s*(?:#.*)\\s*)$/mi";
+        //echo "line read : $line \n";
+        //$re = "/^\\s*(?:#.*$)|(?:\\s*(?<ip>\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\s+(?<name>[a-zA-Z0-9\\.\\- ]+)\\s*(?:#.*)\\s*)$/mi";
+        $re = "/^\\s*(?:#.*$)|(?<ip>(?:[0-9\\.]+)|(?:[A-Fa-f0-9:]+))\\s+(?<name>[a-zA-Z0-9\\.]+)\\s*(?:#.*)?$/mi";
         if (preg_match($re, $line, $matches) > 0) {
             if (isset($matches['ip']) && isset($matches['name'])) {
                 $this->addRule($matches['ip'], $matches['name']);
@@ -87,13 +88,23 @@ class HostFile
 
     function addRule(/* string */ $ip, /* string */ $server_name)
     {
+        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
+            throw new Exception\BadIp();
+        }
+        if (!filter_var($server_name, FILTER_VALIDATE_REGEXP, [
+                "options" => [
+                    "regexp" => "/^[a-zA-Z0-9\\.]*[a-zA-Z0-9]+?/"
+                ]
+            ])) {
+            throw new Exception\BadHostName();
+        }
         $this->rules[$server_name] = $ip;
         return $this;
     }
 
     function save(/* string */$path = null)
     {
-        if (is_null($path) || $path == $this->path) {
+        if (is_null($path) || realpath($path) == $this->path) {
             $this->writeFile($path);
             return $this;
         } else {
