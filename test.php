@@ -1,7 +1,5 @@
 <?php
 
-use fzed51\HostFile\HostFile;
-
 /*
  * The MIT License
  *
@@ -25,6 +23,8 @@ use fzed51\HostFile\HostFile;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
+use fzed51\HostFile\HostFile;
 
 require './vendor/autoload.php';
 
